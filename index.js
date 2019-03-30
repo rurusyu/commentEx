@@ -12,6 +12,11 @@ const rootDiv = document.querySelector("#comments");
 const btn = document.querySelector("#submit");
 const mainCommentCount = document.querySelector('#count'); //맨위 댓글 숫자 세는거.
 
+//글로벌로 뺏음. 값을 저장하기 위해서.
+var voteUpCount = 0;  
+var voteDownCount = 0;
+
+
 //타임스템프 만들기
 function generateTime(){
     const date = new Date();
@@ -42,17 +47,24 @@ function generateUserName(){
     return makeUsername;    
 }
 
-function numberCount(event){
-    console.log(event.target);
-    if(event.target === voteUp){
-        console.log("2");
-      return voteUp.innerHTML++; 
-      
-    }else if(event.target === voteDown){
-      return voteDown.innerHTML++; 
-    }   
+// function numberCount(event){       
+//     console.log("5 투료버튼 누름");      //몇번째가 클릭되는지 인식안되는 듯?
+     
+//           if(event.target === voteUp){    
+//              voteUpCount++;       
+//              voteUp.innerHTML = "👍"+voteUpCount;
+//             return  voteUp.innerHTML;
+               
+//           }else if(event.target === voteDown){
+//              voteDownCount++;   
+//              voteDown.innerHTML = "👎"+voteDownCount;
+//              return voteDown.innerHTML;        
+//           }
     
-}
+   
+//         console.log("6 투료버튼 종료?");   
+        
+// }
 
 function deleteComments(event){    
     const btn = event.target;    
@@ -96,9 +108,9 @@ function showComment(comment){
     countSpan.innerHTML=0;
     //투표창 만들기, css먼저 입혀야함.  
     voteUp.id = "voteUp";
-    voteUp.innerHTML = '↑';    
+    voteUp.innerHTML = "👍"+0;     
     voteDown.id = "voteDown";
-    voteDown.innerHTML = '↓';       
+    voteDown.innerHTML = "👎"+0;       
     voteDiv.appendChild(voteUp);
     voteDiv.appendChild(voteDown);
 
@@ -109,10 +121,21 @@ function showComment(comment){
     commentList.appendChild(voteDiv);
     rootDiv.prepend(commentList);
 
-    voteUp.addEventListener("click",numberCount);
-    voteDown.addEventListener("click",numberCount);
+    
+    //투표버튼 이벤트
+    voteUp.addEventListener("click",function(event){                   
+        voteUpCount++;       
+        voteUp.innerHTML = "👍"+voteUpCount;
+        return  voteUp.innerHTML;
+    });
+    localStorage.setItem("voteUp",voteUpCount);
+    voteDown.addEventListener("click",function(event){
+        voteDownCount++;   
+        voteDown.innerHTML = "👎"+voteDownCount;        
+        return voteDown.innerHTML; 
+    });
+      
     delBtn.addEventListener("click",deleteComments);
-   console.dir(rootDiv);
 
 }
 
@@ -120,6 +143,7 @@ function showComment(comment){
 
 //버튼만들기+입력값 전달
 function pressBtn(){ 
+
    const currentVal = inputBar.value;
    
    if(!currentVal.length){
