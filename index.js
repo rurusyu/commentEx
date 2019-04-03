@@ -67,7 +67,7 @@ function numberCount(event){
    } 
 }
 
-//기존에 남아있던 id초기화 및 
+//기존에 남아있던 id초기화 및 새로추가된부분만 코멘트값 이어서 들어옴.
 function initIdCount(){
     for(let i=0; i<idOrVoteCountList.length; i++){
       if(idOrVoteCountList[i]["commentId"] - i > 1){    
@@ -80,21 +80,14 @@ function initIdCount(){
 function deleteComments(){ 
     const btn = event.target;
     const list = btn.parentNode.parentNode;//commentList
-    //삭제버튼도 마찬가지임. 여러개니깐 인식을 못함. 상위노드에 id 부여함.
+    //삭제버튼도 마찬가지임. 여러개니깐 인식을 못함. 상위노드에 id 부여함.    
+    //삭제버튼 클릭한 배열의 인덱스를 날리면 됨. 뭐 여기까지 해도 상관없는데...
     for(let i=0; i<idOrVoteCountList.length; i++){
         if(idOrVoteCountList[i]["commentId"].toString() === btn.parentNode.id){
             idOrVoteCountList.splice(btn.parentNode.id-1,1);   
         }
 
     }
-    
-
-    //삭제버튼 클릭한 배열의 인덱스를 날리면 됨. 뭐 여기까지 해도 상관없는데... 기존 배열에 들어간 값부분을 지운 곳에서 하나씩 댕겨보기. 
-    // //지웠다가 새로 추가된 값들 commentId 하나씩 땡기기.
-    // for(let i=0; i<idOrVoteCountList.length; i++){
-    //   idOrVoteCountList[i]["commentId"] = idOrVoteCountList.length+1;
-    // }
-
     //그다음에 전체 지우기.
     rootDiv.removeChild(list);   
 
