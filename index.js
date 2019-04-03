@@ -13,8 +13,7 @@ const btn = document.querySelector("#submit");
 const mainCommentCount = document.querySelector('#count'); //맨위 댓글 숫자 세는거.
 
 //글로벌로 뺏음. 값을 저장하기 위해서.
-var voteUpCount = 0;  
-var voteDownCount = 0;
+let idOrVoteCountList=[];
 
 
 //타임스템프 만들기
@@ -47,35 +46,65 @@ function generateUserName(){
     return makeUsername;    
 }
 
-// function numberCount(event){       
-//     console.log("5 투료버튼 누름");      //몇번째가 클릭되는지 인식안되는 듯?
-     
-//           if(event.target === voteUp){    
-//              voteUpCount++;       
-//              voteUp.innerHTML = "👍"+voteUpCount;
-//             return  voteUp.innerHTML;
-               
-//           }else if(event.target === voteDown){
-//              voteDownCount++;   
-//              voteDown.innerHTML = "👎"+voteDownCount;
-//              return voteDown.innerHTML;        
-//           }
-    
-   
-//         console.log("6 투료버튼 종료?");   
-        
-// }
+function numberCount(event){       
+    for(let i=0; i<idOrVoteCountList.length; i++){  
+        if(event.target.className === "voteUp"){                       
+            
+           //event.target.parentNode.id 값이 string이기 때문에 이 값을 Number처리하던지, idOrVoteCountList[i]["commentId"]이 값을 string처리해야 넘어감.
+           if(idOrVoteCountList[i]["commentId"].toString() === event.target.parentNode.id){                
+               idOrVoteCountList[i]["voteUpCount"]++;               
+               event.target.innerHTML = "👍"+idOrVoteCountList[i]["voteUpCount"];
+           }       
+         
+         }else if(event.target.className === "voteDown"){
+           if(idOrVoteCountList[i]["commentId"].toString() === event.target.parentNode.id){
+               idOrVoteCountList[i]["voteDownCount"]++;
+               event.target.innerHTML = "👎"+idOrVoteCountList[i]["voteDownCount"];              
+         } 
+       }
+
+   } 
+}
+
+//기존에 남아있던 id초기화.
+function initIdCount(){
+    for(let i=0; i<idOrVoteCountList.length; i++){
+      if(idOrVoteCountList[i]["commentId"] - i > 1){    
+        idOrVoteCountList[i]["commentId"] =  idOrVoteCountList[i]["commentId"] - (idOrVoteCountList.length-(i+1));
+      }
+    }
+}
+
 
 function deleteComments(event){    
     const btn = event.target;    
     const list = btn.parentNode.parentNode;//commentList
+    
+    //삭제버튼 클릭한 배열의 인덱스를 날리면 됨. 뭐 여기까지 해도 상관없는데... 기존 배열에 들어간 값부분을 지운 곳에서 하나씩 댕겨보기.
+    idOrVoteCountList.splice(idOrVoteCountList[btn.parentNode.id-1],1); 
+    //지웠다가 새로 추가된 값들 commentId 하나씩 땡기기.
+    for(let i=0; i<idOrVoteCountList.length; i++){
+      idOrVoteCountList[i]["commentId"] = idOrVoteCountList.length+1;
+    }
+
+    //그다음에 전체 지우기.
     rootDiv.removeChild(list);
-    //메인댓글 카운트 줄이기.
+   
+
+    //메인댓글 카운트 줄이기. 
     if(mainCommentCount.innerHTML <='0'){
         mainCommentCount.innerHTML = 0;
+        
     }else{
         mainCommentCount.innerHTML--;
+ 
     }
+}
+
+//수정창 모달로 만들기
+function modifyComments(event){
+    const mBtn = event.target;
+    const modal = document.createElement('div');
 }
 
 
@@ -89,6 +118,13 @@ function showComment(comment){
     const voteUp = document.createElement('button');
     const voteDown = document.createElement('button');  
     const commentList = document.createElement('div');  //이놈이 스코프 밖으로 나가는 순간 하나지우면 다 지워지고 입력하면 리스트 다불러옴.
+    const modifyBtn = document.createElement('button');
+    const spacer = document.createElement('div');
+
+    const newId = idOrVoteCountList.length+1; //댓글하나에 달린 ID
+    
+    //스페이서만들기
+    spacer.className = "spacer";
     //삭제버튼 만들기
     const delBtn = document.createElement('button');
     delBtn.className ="deleteComment";
@@ -98,18 +134,26 @@ function showComment(comment){
     inputValue.className="inputValue";
     showTime.className="time";
     voteDiv.className="voteDiv";
+    voteDiv.id = newId;
+    //수정버튼 만들기
+    modifyBtn.className = 'modifyBtn';
+    modifyBtn.innerHTML = "수정";
     //유저네임가져오기 
-    userName.innerHTML = generateUserName();    
+    userName.innerHTML = generateUserName();  
+    userName.appendChild(spacer);
+    userName.appendChild(modifyBtn);
     userName.appendChild(delBtn);  
     //입력값 넘기기
     inputValue.innerText = comment;
     //타임스템프찍기
     showTime.innerHTML = generateTime();
     countSpan.innerHTML=0;
-    //투표창 만들기, css먼저 입혀야함.  
-    voteUp.id = "voteUp";
+    //투표창 만들기, css먼저 입혀야함. 
+    voteUp.className ="voteUp";
+    voteDown.className ="voteDown"; 
+    //voteUp.id = newIdUp;
     voteUp.innerHTML = "👍"+0;     
-    voteDown.id = "voteDown";
+    //voteDown.id = newIdDown;
     voteDown.innerHTML = "👎"+0;       
     voteDiv.appendChild(voteUp);
     voteDiv.appendChild(voteDown);
@@ -120,22 +164,23 @@ function showComment(comment){
     commentList.appendChild(showTime);
     commentList.appendChild(voteDiv);
     rootDiv.prepend(commentList);
-
+   
+    //아이디에 따른 투표수카운트. 배열에 접근해서 수정하는 방식으로 해야함.
+    let IdAccordingToVoteCount ={
+        "commentId" : newId,
+        "voteUpCount" : 0,
+        "voteDownCount" : 0
+    }
     
-    //투표버튼 이벤트
-    voteUp.addEventListener("click",function(event){                   
-        voteUpCount++;       
-        voteUp.innerHTML = "👍"+voteUpCount;
-        return  voteUp.innerHTML;
-    });
-    localStorage.setItem("voteUp",voteUpCount);
-    voteDown.addEventListener("click",function(event){
-        voteDownCount++;   
-        voteDown.innerHTML = "👎"+voteDownCount;        
-        return voteDown.innerHTML; 
-    });
-      
+    idOrVoteCountList.push(IdAccordingToVoteCount);
+    console.log(idOrVoteCountList);
+    initIdCount();
+    
+    
+    voteUp.addEventListener("click",numberCount);
+    voteDown.addEventListener("click",numberCount);
     delBtn.addEventListener("click",deleteComments);
+    modifyBtn.addEventListener("click",modifyComments);
 
 }
 

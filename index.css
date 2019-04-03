@@ -20,7 +20,7 @@
     color: aliceblue;
 }
 
-#voteUp, #voteDown{
+.voteUp, .voteDown{
     width: 5em;
     height: 1.9em;
     background-color: aqua;    
@@ -40,9 +40,14 @@
 .eachComment .name{
     font-size: 1.5em;
     font-weight: bold;
-    margin-bottom: 0.3em;
+    margin-bottom: 0.3em; 
     display: flex;
     justify-content: space-between;
+
+}
+
+.name .spacer{
+   margin-right: 23em;
 }
 
 .eachComment .inputValue{
@@ -64,7 +69,13 @@
     justify-content: flex-end;
 }
 
-.eachComment .deleteComment{
+.name .modifyBtn{
+    background-color: green;
+    color: aliceblue;
+}
+.name .deleteComment{
     background-color: red;
     color: aliceblue;
+
+   
 }
