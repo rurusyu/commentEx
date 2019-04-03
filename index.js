@@ -47,6 +47,7 @@ function generateUserName(){
 }
 
 function numberCount(event){       
+    console.log(event.target.parentNode.id);
     for(let i=0; i<idOrVoteCountList.length; i++){  
         if(event.target.className === "voteUp"){                       
             
@@ -66,38 +67,42 @@ function numberCount(event){
    } 
 }
 
-//기존에 남아있던 id초기화.
+//기존에 남아있던 id초기화 및 
 function initIdCount(){
     for(let i=0; i<idOrVoteCountList.length; i++){
       if(idOrVoteCountList[i]["commentId"] - i > 1){    
-        idOrVoteCountList[i]["commentId"] =  idOrVoteCountList[i]["commentId"] - (idOrVoteCountList.length-(i+1));
+        idOrVoteCountList[i]["commentId"] =  idOrVoteCountList[i]["commentId"] - (idOrVoteCountList.length-(i+1));        
       }
     }
 }
 
 
-function deleteComments(event){    
-    const btn = event.target;    
+function deleteComments(){ 
+    const btn = event.target;
     const list = btn.parentNode.parentNode;//commentList
-    
-    //삭제버튼 클릭한 배열의 인덱스를 날리면 됨. 뭐 여기까지 해도 상관없는데... 기존 배열에 들어간 값부분을 지운 곳에서 하나씩 댕겨보기.
-    idOrVoteCountList.splice(idOrVoteCountList[btn.parentNode.id-1],1); 
-    //지웠다가 새로 추가된 값들 commentId 하나씩 땡기기.
+    //삭제버튼도 마찬가지임. 여러개니깐 인식을 못함. 상위노드에 id 부여함.
     for(let i=0; i<idOrVoteCountList.length; i++){
-      idOrVoteCountList[i]["commentId"] = idOrVoteCountList.length+1;
+        if(idOrVoteCountList[i]["commentId"].toString() === btn.parentNode.id){
+            idOrVoteCountList.splice(btn.parentNode.id-1,1);   
+        }
+
     }
+    
+
+    //삭제버튼 클릭한 배열의 인덱스를 날리면 됨. 뭐 여기까지 해도 상관없는데... 기존 배열에 들어간 값부분을 지운 곳에서 하나씩 댕겨보기. 
+    // //지웠다가 새로 추가된 값들 commentId 하나씩 땡기기.
+    // for(let i=0; i<idOrVoteCountList.length; i++){
+    //   idOrVoteCountList[i]["commentId"] = idOrVoteCountList.length+1;
+    // }
 
     //그다음에 전체 지우기.
-    rootDiv.removeChild(list);
-   
+    rootDiv.removeChild(list);   
 
     //메인댓글 카운트 줄이기. 
     if(mainCommentCount.innerHTML <='0'){
-        mainCommentCount.innerHTML = 0;
-        
+        mainCommentCount.innerHTML = 0;        
     }else{
-        mainCommentCount.innerHTML--;
- 
+        mainCommentCount.innerHTML--; 
     }
 }
 
@@ -128,9 +133,10 @@ function showComment(comment){
     //삭제버튼 만들기
     const delBtn = document.createElement('button');
     delBtn.className ="deleteComment";
-    delBtn.innerHTML="삭제";
+    delBtn.innerHTML="삭제";    
     commentList.className = "eachComment";
     userName.className="name";
+    userName.id = newId; //삭제,수정버튼의 상위노드. 
     inputValue.className="inputValue";
     showTime.className="time";
     voteDiv.className="voteDiv";
@@ -150,10 +156,8 @@ function showComment(comment){
     countSpan.innerHTML=0;
     //투표창 만들기, css먼저 입혀야함. 
     voteUp.className ="voteUp";
-    voteDown.className ="voteDown"; 
-    //voteUp.id = newIdUp;
-    voteUp.innerHTML = "👍"+0;     
-    //voteDown.id = newIdDown;
+    voteDown.className ="voteDown";     
+    voteUp.innerHTML = "👍"+0;         
     voteDown.innerHTML = "👎"+0;       
     voteDiv.appendChild(voteUp);
     voteDiv.appendChild(voteDown);
@@ -174,7 +178,8 @@ function showComment(comment){
     
     idOrVoteCountList.push(IdAccordingToVoteCount);
     console.log(idOrVoteCountList);
-    initIdCount();
+    
+   initIdCount();
     
     
     voteUp.addEventListener("click",numberCount);
