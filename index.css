@@ -75,7 +75,77 @@
 }
 .name .deleteComment{
     background-color: red;
-    color: aliceblue;
+    color: aliceblue;  
+}
 
+.modal{
+    
+    /* 모달 css 정보는 https://codepen.io/sdthornton/pen/wBZdXq 여기참고하면 됨 */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    /* 모달창 크기 100% 만들기 위한 설정 => 스크린에 꽉채운거. */
+    position: fixed;  
+    top : 0;
+    left : 0;
+    width: 100%;
+    height : 100%;
+    display: flex;   
+    justify-content: center;    
+    align-items: center;   
+}
+/* 모달창 뜨면서 뒤에 오버레이 배경준거. 모달창하고 같이 끌어옴. */
+.modal__overlay{
+    background-color: rgba(0,0,0,0.6);
+    width: 100%;
+    height : 100%;
+    position: absolute;
+    
+}
+
+.modal__content{    
+    background-color: white;
+    padding: 50px 100px;
+    text-align: center;
+    position: relative;
+    width : 15%;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    border-radius: 15px;
+      
+}
+
+.modal__content #modifyVal{
+   margin-bottom: 1em;   
+   width: 100%;
+   height: 3.3em;  
+}
+
+
+
+#inBtn{
+    display: flex;
+    justify-content: center; 
+}
+#inBtn #ok {    
+    all : unset;
+    background-color: steelblue;
+    color: white;
+    padding: 5px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right : 10px;
+    
+}
+
+#inBtn #cancle {    
+    all : unset;
+    background-color: steelblue;
+    color: white;
+    padding: 5px 20px;
+    border-radius: 5px;
+    cursor: pointer; 
    
 }
+
+.hidden{
+    display: none;
+}
+

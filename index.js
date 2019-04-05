@@ -100,16 +100,65 @@ function deleteComments(){
 }
 
 //수정창 모달로 만들기
-function modifyComments(event){
+function modifyComments(event){ 
+    
     const mBtn = event.target;
-    const modal = document.createElement('div');
+
+    //모달창 만들기
+      const modal = document.createElement('div')
+      const modalOverlay = document.createElement('div');
+      const modalContent = document.createElement('div');
+      const cancleBtn = document.createElement('button');
+      const okBtn = document.createElement('button');
+      const input = document.createElement('input');
+      const span = document.createElement('span');
+      modal.className = "modal hidden";
+      modalOverlay.className ="modal__overlay";
+      modalContent.className ="modal__content";
+      okBtn.id = "ok";
+      okBtn.innerHTML="수정";
+      cancleBtn.id = "cancle";
+      cancleBtn.innerHTML = "취소";
+      input.id = "modifyVal";
+      input.placeholder = "변경할 내용을 입력하세요";
+      span.id ="inBtn";
+
+      span.appendChild(okBtn);
+      span.appendChild(cancleBtn);
+      modalContent.appendChild(input);
+      modalContent.appendChild(span);
+      modal.appendChild(modalOverlay);
+      modal.appendChild(modalContent);
+      rootDiv.appendChild(modal);  
+
+      modal.classList.remove("hidden");
+      
+      cancleBtn.addEventListener("click",function(){
+        modal.classList.add("hidden");
+      });
+      
+     
+      okBtn.addEventListener("click",function(event){       
+        console.dir(mBtn.parentNode.parentNode.children[1]);       
+
+        for(var i=0; i<idOrVoteCountList.length; i++){                  
+            if(idOrVoteCountList[i]["commentId"].toString() === mBtn.parentNode.id){                
+                idOrVoteCountList[i]["commentValue"] = input.value;  
+                //수정버튼누르면 변경.              
+                mBtn.parentNode.parentNode.children[1].innerHTML = input.value;
+
+                modal.classList.add("hidden");                 
+            }    
+        }
+      });
+
 }
 
 
 //댓글보여주기
 function showComment(comment){
     const userName = document.createElement('div');
-    const inputValue = document.createElement('span');
+    let inputValue = document.createElement('span');
     const showTime = document.createElement('div');
     const voteDiv = document.createElement('div');
     const countSpan = document.createElement('span')
@@ -120,7 +169,8 @@ function showComment(comment){
     const spacer = document.createElement('div');
 
     const newId = idOrVoteCountList.length+1; //댓글하나에 달린 ID
-    
+  
+
     //스페이서만들기
     spacer.className = "spacer";
     //삭제버튼 만들기
@@ -128,9 +178,11 @@ function showComment(comment){
     delBtn.className ="deleteComment";
     delBtn.innerHTML="삭제";    
     commentList.className = "eachComment";
+    commentList.id = newId;
     userName.className="name";
     userName.id = newId; //삭제,수정버튼의 상위노드. 
     inputValue.className="inputValue";
+    inputValue.id = newId; 
     showTime.className="time";
     voteDiv.className="voteDiv";
     voteDiv.id = newId;
@@ -160,13 +212,15 @@ function showComment(comment){
     commentList.appendChild(inputValue);
     commentList.appendChild(showTime);
     commentList.appendChild(voteDiv);
+    
     rootDiv.prepend(commentList);
    
     //아이디에 따른 투표수카운트. 배열에 접근해서 수정하는 방식으로 해야함.
     let IdAccordingToVoteCount ={
         "commentId" : newId,
         "voteUpCount" : 0,
-        "voteDownCount" : 0
+        "voteDownCount" : 0,
+        "commentValue" : comment
     }
     
     idOrVoteCountList.push(IdAccordingToVoteCount);
